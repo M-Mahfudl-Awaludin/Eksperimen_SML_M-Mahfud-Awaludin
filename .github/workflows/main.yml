@@ -1,46 +1,62 @@
 name: Preprocessing Workflow
 
 on:
-  # Trigger workflow ketika ada perubahan pada branch main atau push ke repository
   push:
     branches:
       - main
-  # Trigger workflow secara manual melalui GitHub Actions UI
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   preprocess:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout kode dari repository
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      # Setup Python environment
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: "3.11"
+          cache: "pip"
 
-      # Install dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r preprocessing/requirements.txt
 
-      # Run preprocessing script
-      - name: Run preprocess.py script
+      - name: Check project structure
+        run: |
+          echo "=== ROOT ==="
+          ls -la
+
+          echo "=== PREPROCESSING ==="
+          ls -la preprocessing
+
+      - name: Run preprocessing
         run: |
           python preprocessing/preprocessing_gojek.py
 
-      # Commit dan push hasil dataset yang sudah diproses
+      - name: Check processed data
+        run: |
+          echo "=== OUTPUT FILE ==="
+          ls -lh preprocessing/processed_data.csv
+
+          echo "=== GIT STATUS ==="
+          git status --short
+
       - name: Commit processed data
         run: |
-          git config --global user.email "${{ secrets.GIT_USER_EMAIL }}"
-          git config --global user.name "${{ secrets.GIT_USER_NAME }}"
+          git config user.email "${{ secrets.GIT_USER_EMAIL }}"
+          git config user.name "${{ secrets.GIT_USER_NAME }}"
+
           git add preprocessing/processed_data.csv
-          git commit -m "Update processed data"
+
+          git commit -m "Update processed data" || echo "No changes to commit"
+
           git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
