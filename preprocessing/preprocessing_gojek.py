@@ -9,8 +9,8 @@ from nltk.tokenize import RegexpTokenizer
 from Sastrawi.Stemmer.StemmerFactory import StemmerFactory
 
 BASE_DIR = Path(__file__).resolve().parent
-INPUT_FILE = BASE_DIR / "reviews_gojek.csv"
-OUTPUT_FILE = BASE_DIR / "hasil_Preprocessing_gojek.csv"
+INPUT_FILE = "reviews_gojek.csv"
+OUTPUT_FILE = "preprocessing/hasil_Preprocessing_gojek.csv"
 
 tqdm.pandas()
 
