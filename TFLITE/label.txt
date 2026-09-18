@@ -1,0 +1,13 @@
+plastic/
+    brown-glass/
+    battery/
+    green-glass/
+    cardboard/
+    paper/
+    metal/
+    shoes/
+    trash/
+    white-glass/
+    clothes/
+    biological/
+
